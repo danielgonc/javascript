@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>
+            aula 1
+        </title>
+        <script>
+            let vetor = [];
+            function atualizaHtml(){
+                document.getElementsByClassName("demonstracaoArray")[0].innerHTML = "";
+                for(let i = 0; i < vetor.length; i++){
+                    document.getElementsByClassName("demonstracaoArray")[0].innerHTML += vetor[i] + " ";
+                }
+                return false;
+            } 
+            function adicionar(){
+                vetor.push(parseFloat(document.getElementById('adicionarNumero').value));
+                atualizaHtml();
+                return false;
+            }
+            function calMedia(){
+                let aux = 0;
+                for(let i = 0; i < vetor.length; i++){
+                    aux += vetor[i];
+                }
+                document.getElementsByClassName("media")[0].innerHTML = "Media = " +  (aux / vetor.length);
+            }
+            function limpar(){
+                vetor.length = 0;
+                atualizaHtml();
+                document.getElementsByClassName("media")[0].innerHTML = "";
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <input id="adicionarNumero" type="number" required placeholder="digite o numero">
+            <button onclick="adicionar();">Adicionar</button>
+            <button onclick="calMedia();">Calcular media</button>
+            <button onclick="limpar();">Limpar</button>
+            <div class="demonstracaoArray"></div>
+            <div class="media"></div>
+        </div>
+    </body>
+</html>
