@@ -1,0 +1,42 @@
+<html>  
+    <head>
+        <title>
+            desafio 2
+        </title>
+        <script>
+            let pessoas = [];
+            function listar(sexo){
+                let html = document.getElementById("mostrarLista");
+                html.innerHTML = "";
+                for(let i = 0; i < pessoas.length; i++){
+                    if(pessoas[i].sexo == sexo){
+                        html.innerHTML += pessoas[i].nome + "<br>";
+                    }
+                }
+            }
+            function adicionar(){
+                console.log(document.getElementById("masculino").checked);
+                pessoas.push(
+                    {
+                        "nome": document.getElementById("nome").value,
+                        "sexo": document.getElementById("masculino").checked == true ? "M" : "F"
+                    }
+                );
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <label for="nome">Nome:</label>
+            <input id="nome" type="text">
+            <label for="masculino">Masculino</label>
+            <input id="masculino" type="radio" name="sexo" value="M">
+            <label for="feminino">Feminino</label>
+            <input id="feminino" type="radio" name="sexo" value="F">
+            <button onclick="adicionar();">Adicionar</button>
+            <button onclick="listar('F');">Listar Mulheres</button>
+            <button onclick="listar('M');">Listar Homens</button>
+        </div>
+        <div id="mostrarLista"></div>
+    </body>
+</html>
