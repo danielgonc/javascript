@@ -10,7 +10,7 @@
                 let peso = parseFloat(document.getElementById('inputPeso').value);
                 let altura = parseFloat(document.getElementById('inputAltura').value);
                 imc = (peso/(altura*altura));
-                document.getElementById('resultCalculo').innerHTML = imc;
+                document.getElementById('resultCalculo').innerHTML = Math.round(imc);
             }
             function removeClasses(){
                 document.getElementById('resultClassificacao').classList.remove("red");
