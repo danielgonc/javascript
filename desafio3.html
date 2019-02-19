@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <title>
+            Calculadora IMC
+        </title>
+        <meta charset="UTF-8">
+        <script>
+            let imc;
+            function calcularIMC(){
+                let peso = parseFloat(document.getElementById('inputPeso').value);
+                let altura = parseFloat(document.getElementById('inputAltura').value);
+                imc = (peso/(altura*altura));
+                document.getElementById('resultCalculo').innerHTML = imc;
+            }
+            function removeClasses(){
+                document.getElementById('resultClassificacao').classList.remove("red");
+                document.getElementById('resultClassificacao').classList.remove("blue");
+                document.getElementById('resultClassificacao').classList.remove("yellow");
+                document.getElementById('resultClassificacao').classList.remove("orange");
+                document.getElementById('resultClassificacao').classList.remove("purple");
+                document.getElementById('resultClassificacao').classList.remove("black");
+            }
+            function classificar(){
+                removeClasses();
+                if(imc != null){
+                    if(imc < 18)
+                    {
+                        document.getElementById('resultClassificacao').classList.add("red");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Abaixo do peso</p>";
+                    }
+                    else if(imc < 25){
+                        document.getElementById('resultClassificacao').classList.add("blue");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Ideal</p>";
+                    }
+                    else if(imc < 30){
+                        document.getElementById('resultClassificacao').classList.add("yellow");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Sobre o peso</p>";
+                    }
+                    else if(imc < 35){
+                        document.getElementById('resultClassificacao').classList.add("yellow");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Obesidade I</p>";
+                    }
+                    else if(imc < 40){
+                        document.getElementById('resultClassificacao').classList.add("orange");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Obesidade II</p>";
+                    }
+                    else{
+                        document.getElementById('resultClassificacao').classList.add("black");
+                        document.getElementById('resultClassificacao').innerHTML = "<p>Obesidade III</p>";
+                    }
+                }else
+                    alert("faça o calculo primeiro!");
+            }
+        </script>
+        <style>
+            #resultClassificacao{
+                width: 300px;
+                height: 97px;
+                padding-top: 41px;
+                text-align: center;
+            }
+            .red{
+                background-color: #ff0000;
+                color:#000000;
+            }
+            .blue{
+                background-color: #0000ff;   
+                color:#ffffff;
+            }
+            .yellow{
+                background-color: #ffff00;   
+                color:#000000;
+            }
+            .orange{
+                background-color: #ffa500;
+                color:#000000;
+            }
+            .purple{
+                background-color: #800080;
+                color:#000000;
+            }
+            .black{
+                background-color: #000000;
+                color:#ffffff;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Calculadora IMC</h1>
+        <div>
+            <label for="inputPeso">Peso</label>
+            <input id="inputPeso" type="number" step=".1">
+            <br>
+            <label for="inputAltura">Altura</label>
+            <input id="inputAltura" type="number" step=".01">
+            <button onclick="calcularIMC()">Calcular IMC</button>
+            <button onclick="classificar()">Minha classificação</button>
+        </div>
+        <div id="resultCalculo">
+
+        </div>
+        <div id="resultClassificacao">
+
+        </div>
+    </body>
+</html>
