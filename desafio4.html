@@ -1,0 +1,69 @@
+<html>  
+    <head>
+        <title>Desafio 4</title>
+        <script>
+            let pessoas = [];
+
+            function adicionar(e){
+                e.preventDefault();
+                pessoas.push({
+                    "Nome": document.getElementsByName("Nome")[0].value,
+                    "Idade": parseInt(document.getElementsByName("Idade")[0].value),
+                    "Sexo": document.getElementById("feminino").checked == true ? "F" : "M"
+                });
+            }
+            function listar(opcao){
+                document.getElementById("resultadoLista").innerHTML = "";
+
+                let quantidadeOpcao = 0;
+                for(let i = 0 ; i < pessoas.length; i++){
+                    if(opcao == "M" && pessoas[i].Sexo == "F"){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                    else if(opcao == "H" && pessoas[i].Sexo == "M"){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                    else if(opcao == "C" && pessoas[i].Idade <= 14){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                    else if(opcao == "A" && pessoas[i].Idade > 13 && pessoas[i].Idade <= 21){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                    else if(opcao == "Ad" && pessoas[i].Idade > 21 && pessoas[i].Idade <= 63){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                    else if(opcao == "I" && pessoas[i].Idade > 63){
+                        document.getElementById("resultadoLista").innerHTML += pessoas[i].Nome + " " + pessoas[i].Idade + "<br>";
+                        quantidadeOpcao++;
+                    }
+                }
+                document.getElementById("resultadoLista").innerHTML += "Total " + quantidadeOpcao; 
+            }
+        </script>
+    </head>
+    <body>
+        <form id="formPessoa" action="" onsubmit="adicionar(event);">
+            <input type="text" name="Nome" placeholder="Nome" required>
+            <input type="number" name="Idade" placeholder="Idade" required>
+            <input id="masculino" type="radio" name="Sexo" value="M">
+            <label for="masculino">Masculino</label>
+            <input id="feminino" type="radio" name="Sexo" value="F">
+            <label for="feminino">Feminino</label>
+            <button type="submit">Adicionar</button>
+        </form>
+        <button onclick="listar('M')">Listar mulheres</button>
+        <button onclick="listar('H')">Listar Homens</button>
+        <button onclick="listar('C')">Listar crianças</button>
+        <button onclick="listar('A')">Listar adolescentes</button>
+        <button onclick="listar('Ad')">Listar adultos</button>
+        <button onclick="listar('I')">Listar Idosos</button>
+
+        <div id="resultadoLista"></div>
+
+    </body>
+</html>
