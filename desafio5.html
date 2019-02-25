@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>
+            Desafio 5
+        </title>
+        <script>
+            let numeros = [];
+
+            function mostrarNoHtml(){
+                let element = document.getElementById('ListaNumeros')
+                element.innerHTML = ""
+                for(let i = 0 ; i < numeros.length; i++){
+                    element.innerHTML += numeros[i] + " ";
+                }
+            }
+
+            function adicionar(event){
+                event.preventDefault();
+                numeros.push(parseInt(document.getElementById('numero').value));
+                mostrarNoHtml();
+                document.getElementById('numero').value = "";
+            }
+
+            function listar(tipo){
+                if(tipo == 'P'){
+                    let elemento = document.getElementById('resultadoPar');
+                    elemento.innerHTML = "Pares = "
+                    for(let i = 0 ; i < numeros.length; i++){
+                        if(numeros[i] % 2 == 0){
+                            elemento.innerHTML += numeros[i] + " ";
+                        }
+                    }
+                }else{
+                    let elemento = document.getElementById('resultadoImpar');
+                    elemento.innerHTML = "Impares = ";
+                    for(let i = 0 ; i < numeros.length; i++){
+                        if(numeros[i] % 2 != 0){
+                            elemento.innerHTML += numeros[i] + " ";
+                        }
+                    }
+                }
+            }
+
+        </script>
+    </head>
+    <body>
+        <div>
+            <form onsubmit="adicionar(event);">
+                <input id="numero" type="number" required>
+                <button type="submit">Adicionar</button>
+            </form>
+            <div id="ListaNumeros"></div>
+            <br>
+            <div>
+                <button onclick="listar('P')">Pares</button>
+                <button onclick="listar('I')">Ímpar</button>
+            </div>
+            <div id="resultadoPar"></div>
+            <div id="resultadoImpar"></div>
+        </div>
+    </body>
+</html>
