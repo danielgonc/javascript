@@ -26,12 +26,12 @@
             <h1>Desafio 6</h1>
             <form onsubmit="adicionar(event);">
                 <label for="NomePessoa">Cadastrar nova pessoa</label>
-                <input id="NomePessoa" name="NomePessoa" type="text" placeholder="Nome">
+                <input id="NomePessoa" name="NomePessoa" type="text" placeholder="Nome" required>
                 <button type="submit">Cadastrar</button>
             </form>
             <form onsubmit="pesquisar(event);">
                 <label for="NomePesquisa">Pesquisar por nome</label>
-                <input type="text" name="NomePesquisa" id="NomePesquisa" placeholder="Nome">
+                <input type="text" name="NomePesquisa" id="NomePesquisa" placeholder="Nome" required>
                 <button type="submit">Pesquisar</button>
             </form>
             <div id="ResultadoPesquisa">
