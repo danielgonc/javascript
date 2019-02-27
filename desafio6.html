@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>
+            Desafio 6
+        </title>
+        <script>
+            let nomes = [];
+            function adicionar(e){
+                e.preventDefault();
+                nomes.push(document.getElementById('NomePessoa').value);
+                document.getElementById('NomePessoa').value = "";
+            }
+            function pesquisar(e){
+                e.preventDefault();
+                let pesquisa = document.getElementById('NomePesquisa').value;
+                let elemento = document.getElementById('ResultadoPesquisa');
+                elemento.innerHTML = "";
+                for(let i = 0; i < nomes.length; i++){
+                    elemento.innerHTML += nomes[i].toLowerCase().indexOf(pesquisa.toLowerCase()) >= 0 ? nomes[i] + "<br>" : "";
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div>
+            <h1>Desafio 6</h1>
+            <form onsubmit="adicionar(event);">
+                <label for="NomePessoa">Cadastrar nova pessoa</label>
+                <input id="NomePessoa" name="NomePessoa" type="text" placeholder="Nome">
+                <button type="submit">Cadastrar</button>
+            </form>
+            <form onsubmit="pesquisar(event);">
+                <label for="NomePesquisa">Pesquisar por nome</label>
+                <input type="text" name="NomePesquisa" id="NomePesquisa" placeholder="Nome">
+                <button type="submit">Pesquisar</button>
+            </form>
+            <div id="ResultadoPesquisa">
+
+            </div>
+        </div>
+    </body>
+</html>
