@@ -40,16 +40,16 @@
 
                     if(diferencaDias > 0)
                     {
-
-                        let juroPorDia = parseFloat(jurosPorMes/30)/100;
+                        let juroPorDia = (parseFloat(jurosPorMes/30)/100).toPrecision(1);
 
                         let jurosTotal = parseFloat(diferencaDias * (juroPorDia * valor));
-                        let total = jurosTotal + multaAtraso + valor;
+                        let total = jurosTotal + ((multaAtraso/100)*valor) + valor;
 
                         html = `<tr><td>${multaAtraso}</td><td>${diferencaDias}</td><td>R$${jurosTotal}</td><td>R$${total}</td></tr>`;
 
-                    }else
-                    html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor}</td></tr>`;
+                    }
+                    else
+                        html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor}</td></tr>`;
                 }
                         
                 
