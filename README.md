@@ -1,3 +1,2 @@
 # javascript
-  Aulas Virmerson
-  Desafios propostos em sala de aula
+  Desafios propostos em sala de aula pelo professor Virmerson
