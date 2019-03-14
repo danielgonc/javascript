@@ -10,7 +10,7 @@
             var multaAtraso;
             var dataHoje;
 
-            function dataAtual(qual){
+            const dataAtual = (qual) => {
                 let data = new Date(Date.now());
                 if(qual < 4)
                     document.getElementById('DataVencimento' + qual).value = `${data.getFullYear()}-${("0" + (data.getMonth() + 1)).slice(-2)}-${("0" + data.getDate()).slice(-2)}`;
@@ -42,7 +42,7 @@
             }
 
 
-            function realizarCalculo(){
+            const realizarCalculo = () => {
                 
                 let valor = obterCamposMultiplos("valorMen");
                 let dataVencimento = obterCamposMultiplos("DataVencimento");

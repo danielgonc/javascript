@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <meta charset="UTF-8">
         <script> 
-            function dataAtual(vencimento){
+            const dataAtual = (vencimento) =>{
                 let data = new Date(Date.now());
                 if(!vencimento)
                     document.getElementById('DataHoje').value = `${data.getFullYear()}-${("0" + (data.getMonth() + 1)).slice(-2)}-${("0" + data.getDate()).slice(-2)}`;
@@ -23,7 +23,7 @@
                 return diferencaDias;
             }
 
-            function realizarCalculo(e){
+            const realizarCalculo = (e) =>{
                 e.preventDefault();
                 
                 let jurosPorMes = document.getElementById('juroMes').value;
@@ -51,8 +51,6 @@
                     else
                         html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor}</td></tr>`;
                 }
-                        
-                
                 document.getElementById('corpo-tabela').innerHTML = html;
             }
         </script>
