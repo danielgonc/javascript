@@ -1,6 +1,15 @@
 <html>
     <head>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script>
+
+            var jurosPorMes;
+            var multaAtraso;
+            var dataHoje;
+
             function dataAtual(qual){
                 let data = new Date(Date.now());
                 if(qual < 4)
@@ -8,43 +17,88 @@
                 else
                     document.getElementById('DataHoje').value = `${data.getFullYear()}-${("0" + (data.getMonth() + 1)).slice(-2)}-${("0" + data.getDate()).slice(-2)}`;
             }
+
             const verificaDias = (data1, data2) =>{
                 let diffHr = Math.abs(data2.getTime() - data1.getTime());
                 let diferencaDias = Math.ceil(diffHr / (1000 * 3600 * 24)); 
                 return diferencaDias;
             }
-
-            function realizarCalculo(e){
-                e.preventDefault();
-                
-                let jurosPorMes = document.getElementById('juroMes').value;
-                let multaAtraso = parseFloat(document.getElementById('multaAtraso').value);
-                let dataHoje = new Date(document.getElementById('DataHoje').value);
-                let valor = parseFloat(document.getElementById('valorMen').value);
-                let dataVencimento = new Date(document.getElementById('DataVencimento').value);
-                let html = "";
-
-                if(dataVencimento > dataHoje)
-                    html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor}</td></tr>`;
-                else{
-                    let diferencaDias = verificaDias(dataVencimento, dataHoje);
-
-                    if(diferencaDias > 0)
-                    {
-                        let juroPorDia = (parseFloat(jurosPorMes/30)/100).toPrecision(1);
-
-                        let jurosTotal = parseFloat(diferencaDias * (juroPorDia * valor));
-                        let total = jurosTotal + ((multaAtraso/100)*valor) + valor;
-
-                        html = `<tr><td>${multaAtraso}</td><td>${diferencaDias}</td><td>R$${jurosTotal}</td><td>R$${total}</td></tr>`;
-
-                    }
-                    else
-                        html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor}</td></tr>`;
+            const transformers = (fun) =>{
+                return (valor) =>{
+                    if(fun == 'Date')
+                        return new Date(valor);
+                    return fun(valor);
                 }
-                        
+            }
+
+            const obterCamposMultiplos = (tipo) =>{
+                let arrayRetorno = [];
+                let funci = tipo == "valorMen" ? parseFloat : 'Date';
+
+                for(let i=1;i<=3;i++){
+                    arrayRetorno.push(transformers(funci)(document.getElementById(tipo + i).value));
+                }
+                return arrayRetorno;
+            }
+
+
+            function realizarCalculo(){
                 
+                let valor = obterCamposMultiplos("valorMen");
+                let dataVencimento = obterCamposMultiplos("DataVencimento");
+                let html = "";
+                let somaValor =0;
+                let somaJuros = 0;
+                let somaMulta =0;
+                let somaDias =0;
+
                 document.getElementById('corpo-tabela').innerHTML = html;
+                for(let i=0;i<3;i++){
+
+                    if(dataVencimento[i] > dataHoje){
+                        html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor[i]}</td></tr>`;
+                        somaValor += valor[i];
+                    }else{
+                        let diferencaDias = verificaDias(dataVencimento[i], dataHoje);
+
+                        if(diferencaDias > 0)
+                        {
+                            let multa = parseFloat(((multaAtraso/100)*valor[i]).toPrecision(1));
+
+                            let juroPorDia = (parseFloat(jurosPorMes/30)/100).toPrecision(1);
+                            let jurosTotal = parseFloat((diferencaDias * (juroPorDia * valor[i])).toPrecision(1));
+                            let total = jurosTotal + multa + valor[i];
+
+                            html = `<tr><td>R$${multa}</td><td>${diferencaDias}</td><td>R$${jurosTotal}</td><td>R$${total}</td></tr>`;
+                            
+                            somaDias += diferencaDias;
+                            somaMulta += multa;
+                            somaValor += total;
+                            somaJuros += jurosTotal;
+                        }
+                        else{
+                            html = `<tr><td>0</td><td>0</td><td>0</td><td>R$${valor[i]}</td></tr>`;
+                            somaValor += valor[i];
+                        }
+                    }
+                    document.getElementById('corpo-tabela').innerHTML += html;
+                }
+                document.getElementById('corpo-tabela').innerHTML += 
+                 `<tr style="background-color: #007bff; color: white;"><td>R$${somaMulta}</td><td>${somaDias}</td><td>R$${somaJuros}</td><td>R$${somaValor}</td></tr>`;
+            }
+
+            const formSubmetido = (e) => {
+                e.preventDefault();
+
+                jurosPorMes = document.getElementById('juroMes').value;
+                multaAtraso = parseFloat(document.getElementById('multaAtraso').value);
+                dataHoje = new Date(document.getElementById('DataHoje').value);
+
+                if(!jurosPorMes || !multaAtraso || !dataHoje){
+                    alert("Preencha todos os dados!")
+                    return false;
+                }
+                realizarCalculo();
             }
         </script>
     </head>
@@ -52,110 +106,106 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <form onsubmit="realizarCalculo(event);" class="form">
-                        <div class="col-xs-12">
-                            <h2 class="text-center mb-5 mt-5">
-                                Dados para calculo
-                            </h2>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label " for="juroMes">Juros por mês</label>
+                    <div class="col-xs-12">
+                        <h2 class="text-center mb-5 mt-5">
+                            Dados para calculo
+                        </h2>
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-4 p-0">
+                                <label class="control-label " for="juroMes">Juros por mês</label>
+                            </div>
+                            <div class="col-xs-12 col-sm-8 p-0">
+                                <input id="juroMes" class="form-control" placeholder="%" type="number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-4 p-0">
+                                <label class="control-label" for="multaAtraso">Multa por atraso</label>
+                            </div>
+                            <div class="col-xs-12 col-sm-8 p-0">
+                                <input id="multaAtraso" class="form-control" placeholder="%" type="number">
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-4 p-0">
+                                <label class="control-label " for="DataHoje">Data de hoje</label>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-8">
+                                    <input id="DataHoje" class="form-control" type="date">
                                 </div>
-                                <div class="col-xs-12 col-sm-8 p-0">
-                                    <input id="juroMes" class="form-control" placeholder="%" type="number" required>
+                                <div class="col-xs-2 col-sm-4">
+                                    <a href="#" class="btn btn-primary" onclick="dataAtual(4);">Hoje</a>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label" for="multaAtraso">Multa por atraso</label>
-                                </div>
-                                <div class="col-xs-12 col-sm-8 p-0">
-                                    <input id="multaAtraso" class="form-control" placeholder="%" type="number" required>
-                                </div> 
-                            </div>
-                            <!--<div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label " for="DataHoje">Data de hoje</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-10 col-sm-8">
-                                        <input id="DataHoje" class="form-control" type="date" required>
-                                    </div>
-                                    <div class="col-xs-2 col-sm-4">
-                                        <a href="#" class="btn btn-primary" onclick="dataAtual();">Hoje</a>
-                                    </div>
-                                </div>
-                            </div>-->
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label" for="DataVencimento">Data de vencimento</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-10 col-sm-8">
-                                        <input id="DataVencimento1" class="form-control" type="date" required>
-                                    </div>
-                                    <div class="col-xs-2 col-sm-4">
-                                        <a href="#" class="btn btn-primary" onclick="dataAtual(1);">Hoje</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label " for="valorMen">Valor 1 R$</label>
-                                </div>
-                                <div class="col-xs-12 col-sm-8 p-0">
-                                    <input id="valorMen" class="form-control" placeholder="R$" type="number" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label" for="DataVencimento">Data de vencimento</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-10 col-sm-8">
-                                        <input id="DataVencimento2" class="form-control" type="date" required>
-                                    </div>
-                                    <div class="col-xs-2 col-sm-4">
-                                        <a href="#" class="btn btn-primary" onclick="dataAtual(2);">Hoje</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label " for="valorMen">Valor 2 R$</label>
-                                </div>
-                                <div class="col-xs-12 col-sm-8 p-0">
-                                    <input id="valorMen" class="form-control" placeholder="R$" type="number" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label" for="DataVencimento">Data de vencimento</label>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-10 col-sm-8">
-                                        <input id="DataVencimento3" class="form-control" type="date" required>
-                                    </div>
-                                    <div class="col-xs-2 col-sm-4">
-                                        <a href="#" class="btn btn-primary" onclick="dataAtual(3);">Hoje</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-4 p-0">
-                                    <label class="control-label " for="valorMen">Valor 3 R$</label>
-                                </div>
-                                <div class="col-xs-12 col-sm-8 p-0">
-                                    <input id="valorMen" class="form-control" placeholder="R$" type="number" required>
-                                </div>
-                            </div>
-                            <div class="form-group text-center">
-                                <button type="submit" class="btn btn-success">Calcular</button>
-                            </div>
-                            
+                        </div>
+                    </div>
+                    <form onsubmit="formSubmetido(event);" class="form">
+                        <table class="table">
+                            <thead>
+                                <th class="col-xs-6">Data de vencimento</th>
+                                <th class="col-xs-6">Valor da parcela</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xs-10 col-sm-8">
+                                                <input id="DataVencimento1" class="form-control" type="date" required>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-4">
+                                                <a href="#" class="btn btn-primary" onclick="dataAtual(1);">Hoje</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-xs-12 col-sm-8 p-0">
+                                            <input id="valorMen1" class="form-control" placeholder="R$" type="number" required>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xs-10 col-sm-8">
+                                                <input id="DataVencimento2" class="form-control" type="date" required>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-4">
+                                                <a href="#" class="btn btn-primary" onclick="dataAtual(2);">Hoje</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-xs-12 col-sm-8 p-0">
+                                            <input id="valorMen2" class="form-control" placeholder="R$" type="number" required>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xs-10 col-sm-8">
+                                                <input id="DataVencimento3" class="form-control" type="date" required>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-4">
+                                                <a href="#" class="btn btn-primary" onclick="dataAtual(3);">Hoje</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-xs-12 col-sm-8 p-0">
+                                            <input id="valorMen3" class="form-control" placeholder="R$" type="number" required>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="form-group text-center">
+                            <button class="btn btn-success" type="submit">
+                                Calcular
+                            </button>
                         </div>
                     </form>
-                        
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <h2 class="text-center mb-5 mt-5">Resultado</h2>
